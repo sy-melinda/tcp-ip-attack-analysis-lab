@@ -70,3 +70,39 @@ Potential defensive measures include:
 - Monitoring unexpected or repeated TCP `RST` packets.
 - Applying ingress and egress filtering to reduce IP address spoofing.
 - Keeping operating systems and network devices updated.
+
+## 2. TCP RST Attack Against SSH
+
+### Technique 
+
+SSH encrypts communication between the client and server, protecting login credentials, commands, and transmitted data. However, SSH operates over TCP, so disrupting the underlying TCP connection can still terminate an SSH session.
+
+This experiment examined whether a TCP reset packet could interrupt an established SSH connection in the controlled lab environment.
+
+## Establishing the SSH Connection
+
+An SSH connection was established between the designated virutal machines. The terminal confirmed that the client had successfully authenticated and connected to the remote system.
+
+![Established SSH session](assets/screenshots/04-ssh-session-established.png)
+
+**Obeservation:** The SSH session was active and operating normally before the reset packet was introduced.
+
+### Generating the TCP Reset Packet
+
+Netwag was configured to generate a TCP reset packet associated with the active SSH connection.
+
+![SSH reset tool interface](assets/screenshots/05-ssh-rst-tool-interface.png)
+
+**Observation:** Although SSH encrypted the application data, it continued to depend on the underlying TCP connection.
+
+### Connection Termination
+
+After the reset packet was transmitted, the SSH connection was interrupted.
+
+![Closed SSH connection](assets/screenshots/06-ssh-connection-closed.png)
+
+**Result:** The SSH client displayed a `Broken pipe` message, confirming that the underlying TCP session had been terminated.
+
+### Security Analysis
+
+This result does not indicate that SSH encryption was broken. The contents of the SSH session remained protected, but the connection itself became unavailable because its TCP transport was disrupted.
