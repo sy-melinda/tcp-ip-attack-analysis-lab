@@ -26,3 +26,19 @@ The purpose was to understand how these attacks work and identify appropriate de
 - Telnet
 - OpenSSH
 - ICMP utilities
+
+## 1. TCP RST Attack Against Telnet
+
+### Technique
+
+A TCP Reset (`RST`) packet tells a device to terminate a TCP connection immediately. If a forged reset packet contains information that matches an active connection, the receiving system may accept it and close the session.
+
+In this experiment, a TCP reset packet was generated against an established Telnet connection to observe its effect on session availability.
+
+### Establishing the Telnet Connection
+
+A Telnet connection was first established between the designated virtual machines. The active session provided a baseline before the reset packet was introduced.
+
+![Established Telnet session](assets/screenshots/01-telnet-session-established.png)
+
+**Observation:** The terminal confirmed that the Telnet connection was active and accepting commands normally.
