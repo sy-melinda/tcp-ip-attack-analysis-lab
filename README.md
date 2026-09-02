@@ -114,3 +114,49 @@ This demonstrates the difference between confidentiality and availability:
 - Encryption alone cannot prevent every denial-of-service attack.
 - Stateful firewalls and modern TCP validation can reduce the acceptance or suspicious reset packets.
 - Monitoring repeated or unexpected TCP `RST` packets can help identify attempted disruption.
+
+## 3. ICMP Blind Connection-Reset Attack
+
+### Technique 
+
+ICMP error messages are normally used to report network-delivery problems. For example, an ICMP Destination Unreachable message may indicate that a destination, protocol, or port cannot be reached.
+
+However, forged ICMP error messages can potentially mislead a receiving system into believing that legitimate traffic cannot be delivered. This may interrupt or influence an existing connection, resulting in a denial-of-service condition.
+
+## Capturing the Baseline Traffic
+
+Wireshark was used to capture the original network traffic before the forged ICMP message was introduced.
+
+![Baseline ICMP Wireshark capture](assets/screenshots/07-icmp-baseline-wireshark-capture.png)
+
+**Observation:** The capture established the normal traffic pattern and provided the packet information needed for comparison.
+
+### Generating an ICMP Destination Unreachable Message
+
+Netwag was configured in the isolated lab environment to generate an ICMP Destination Unreachable message associated with the selected traffic.
+
+![ICMP unreachable tool interface](assets/screenshots/08-icmp-unreachable-tool-interface.png)
+
+**Observation:** The tool generated a controlled ICMP error message containing information intended to resemble the original network traffic.
+
+### Analyzing the Result in Wireshark
+
+The generated ICMP Destination Unreachable packet was captured and examined in Wireshark.
+
+![ICMP unreachable Wireshark result](assets/screenshots/09-icmp-unreachable-wireshark-result.png)
+
+**Result:** Wireshark identified the generated packet as an ICMP Destination Unreachable message, demonstrating how an unauthenticated network-layer error can be introduced into captured traffic.
+
+### Security Analysis
+
+Forged ICMP errors may be used to disrupt communications if a receiving system incorrectly associates them with a legitimate connection.
+
+Potential defensive measures include:
+
+- Validating the embedded packet information inside ICMP error messages.
+- Rejecting ICMP messages that do not correspond to legitimate traffic.
+- Monitoring unusual volumes of Destination Unreachable messages.
+- Using stateful firewalls and intrusion-detection systems.
+- Applying network filtering without blocking all necessary ICMP traffic.
+- Keeping network devices and operating systems updated.
+  
