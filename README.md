@@ -207,3 +207,56 @@ Potential defensive measures include:
 - Applying anti-spoofing filters at network boundaries.
 - Investigating devices that continue to generate deprecated messages.
 
+## 5. TCP Session Hijacking Analysis
+
+### Technique
+
+TCP session hijacking occurs when an attacker attempts to insert forged data into an established TCP connection. For the injected packet to be accepted, it must appear consistent with the connection's existing state, including its IP addresses, port numbers, sequence numbers, and acknowledgement numbers.
+
+Telnet is particularly vulnerable because it sends commands and other session data without encryption or strong application-layer integrity protection.
+
+### Establishing the Telnet Session
+
+A Telnet connection was established between the designated virtual machines to create an active TCP session for analysis.
+
+![Telnet session used for hijacking analysis](assets/screenshots/13-telnet-hijacking-session.png)
+
+**Observation:** The terminal confirmed that the Telnet session was active before packet analysis began.
+
+### Identifying the TCP Session Information 
+
+Wireshark was used to locate the most recent packet belonging to the Telnet connection. The packet contained information needed to understand the current state of the TCP stream.
+
+![Telnet packet data analysis](assets/screenshots/14-telnet-packet-data-analysis.png)
+
+The selected packet was then expanded to examine its TCP header fields in greater detail.
+
+![Telnet sequence details](assets/screenshots/15-telnet-sequence-details.png)
+
+**Observation:** The capture displayed the source and destination addresses, port numbers, TCP flags, sequence number, acknowledgement number, and payload data associated with the session.
+
+### Observing the Injected Command
+
+A harmless test command was introduced into the Telnet stream within the isolated lab environment. Wireshark captured the additional packet and displayed the injected payload.
+
+![Injected command in Wireshark](assets/screenshots/16-injected-command-wireshark-capture.png)
+
+The packet details were examined to confirm the TCP header values and the presence of the test command.
+
+![Injected command packet details](assets/screenshots/17-injected-command-packet-details.png)
+
+**Result:** The injected data appeared within the TCP stream, demonstrating how an attacker who can observe or predict valid connection information may attempt to make forged traffic appear legitimate.
+
+### Security Analysis
+
+This experiment demonstrates the risks of using plaintext remote-access protocols. Telnet does not encrypt its contents, allowing network observers to inspect commands and session information. It also lacks modern application-layer integrity protections capable of detecting manipulated session data.
+
+Potential defensive measures include:
+
+- Disabling Telnet and using SSH for remote administration.
+- Requiring encrypted and authenticated management protocols.
+- Restricting administrative services to trusted network segments.
+- Using stateful firewalls to reject packets that do not match valid connection state.
+- Monitoring unexpected payloads and sequence-number anomalies.
+- Applying anti-spoofing filters at network boundaries.
+- Using intrusion-detection systems to detect suspicious Telnet traffic.
