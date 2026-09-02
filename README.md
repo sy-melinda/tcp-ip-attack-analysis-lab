@@ -106,3 +106,11 @@ After the reset packet was transmitted, the SSH connection was interrupted.
 ### Security Analysis
 
 This result does not indicate that SSH encryption was broken. The contents of the SSH session remained protected, but the connection itself became unavailable because its TCP transport was disrupted.
+
+This demonstrates the difference between confidentiality and availability:
+
+- SSH protects the confidentiality and integrity of transmitted data.
+- TCP reset attacks target connection availability.
+- Encryption alone cannot prevent every denial-of-service attack.
+- Stateful firewalls and modern TCP validation can reduce the acceptance or suspicious reset packets.
+- Monitoring repeated or unexpected TCP `RST` packets can help identify attempted disruption.
