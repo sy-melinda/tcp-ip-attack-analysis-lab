@@ -42,3 +42,31 @@ A Telnet connection was first established between the designated virtual machine
 ![Established Telnet session](assets/screenshots/01-telnet-session-established.png)
 
 **Observation:** The terminal confirmed that the Telnet connection was active and accepting commands normally.
+
+### Generating the TCP Reset Packet
+
+Netwag was used inside the isolated lab to generate a TCP reset packet associated with the active Telnet connection.
+
+![TCP reset tool interface](assets/screenshots/02-telnet-rst-tool-interface.png)
+
+**Observation:** The packet-generation interface was configured to reproduce a TCP reset scenario against the designated lab connection.
+
+### Connection Termination
+
+After the reset packet was transmitted, the Telnet session was immediately interrupted.
+
+![Closed Telnet connection](assets/screenshots/03-telnet-connection-closed.png)
+
+**Result:** The terminal displayed the message `Connection closed by foreign host`, confirming that the active TCP session had been terminated.
+
+### Security Analysis
+
+This experiment demonstrates that forged TCP reset packets can be used to disrupt established connections, producing a denial-of-service condition. Telnet is especially unsafe because it transmits session data without encryption, making connection information and application content easier to observe.
+
+Potential defensive measures include:
+
+- Replacing Telnet with SSH for remote administration.
+- Using stateful firewalls to validate established connections.
+- Monitoring unexpected or repeated TCP `RST` packets.
+- Applying ingress and egress filtering to reduce IP address spoofing.
+- Keeping operating systems and network devices updated.
