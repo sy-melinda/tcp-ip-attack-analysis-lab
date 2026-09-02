@@ -160,3 +160,50 @@ Potential defensive measures include:
 - Applying network filtering without blocking all necessary ICMP traffic.
 - Keeping network devices and operating systems updated.
   
+## 4. ICMP Source Quench Analysis
+
+### Technique
+
+ICMP Source Quench was originally designed to tell a transmitting host to reduce its sending rate when network congestion occurred. Because these messages were unauthenticated, they could potentially be forged to interfere with network performance.
+
+ICMP Source Quench is now obsolete and has been formally deprecated. Modern systems should ignore these messages rather than allowing them to control transmission behavior.
+
+### Capturing the Baseline Traffic
+
+Wireshark was used to observe the original network traffic before introducing the Source Quench packet.
+
+![Source Quench baseline capture](assets/screenshots/10-source-quench-baseline-capture.png)
+
+**Observation:** The baseline capture showed the normal traffic pattern before the controlled ICMP message was generated.
+
+### Generating the Source Quench Message
+
+Netwag was configured to generate an ICMP Source Quench message inside the isolated lab environment.
+
+![Source Quench tool interface](assets/screenshots/11-source-quench-tool-interface.png)
+
+**Observation:** The packet-generation interface was used to reproduce the structure of the deprecated ICMP message for analysis.
+
+### Analysis the Packet in Wireshark
+
+The generated Source Quench packet was captured and inspected in Wireshark.
+
+![Source Quench Wireshark result](assets/screenshots/12-source-quench-wireshark-result.png)
+
+**Result:** Wireshark identified the packet as an ICMP Source Quench message, allowing its type, source address, destination address, and embedded packet information to be examined.
+
+### Security Analysis
+
+An attacker could attempt to forge Source Quench messages to reduce a target's transmission rate or interfere with network performance. Because the message lacks cryptographic authentication, the receiving system cannot reliably confirm that it came from a legitimate network device.
+
+The use of Source Quench has been deprecated because congestion control should be handled by transport protocols rather than unauthenticated ICMP messages.
+
+Potential defensive measures include:
+
+- Configuring systems to ignore ICMP Source Quench messages.
+- Keeping operating systems and network devices updated.
+- Monitoring networks for obsolete or unexpected ICMP message types.
+- Using intrusion-detection systems to identify abnormal ICMP traffic.
+- Applying anti-spoofing filters at network boundaries.
+- Investigating devices that continue to generate deprecated messages.
+
